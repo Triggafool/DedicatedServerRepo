@@ -24,7 +24,7 @@ struct FDSMetaData
 };
 
 USTRUCT()
-struct FDSListFleetsReponse
+struct FDSListFleetsResponse
 {
 	GENERATED_BODY()
 

@@ -2,11 +2,14 @@
 
 
 #include "UI/APITest/APITestOverlay.h"
-
+#include "Components/Scrollbox.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "DedicatedServers/DedicatedServers.h"
 #include "UI/API/ListFleets/ListFleetsBox.h"
 #include "UI/APITest/APITestManager.h"
-
+#include "UI/API/ListFleets/UFleetId.h"
+#include "UI/HTTP/HTTPRequestTypes.h"
 
 
 void UAPITestOverlay::NativeConstruct()
@@ -15,12 +18,48 @@ void UAPITestOverlay::NativeConstruct()
 
 	check(APITestManagerClass);
 
-	TestManager = NewObject<UAPITestManager>(this, APITestManagerClass);
+	APITestManager = NewObject<UAPITestManager>(this, APITestManagerClass);
 
 	check(ListFleetsBox);
 	check(ListFleetsBox->Button_ListFleets);
-	ListFleetsBox->Button_ListFleets->OnClicked.AddDynamic(TestManager, &UAPITestManager::ListFleetsButtonClicked);
-
+	
+	ListFleetsBox->Button_ListFleets->OnClicked.AddDynamic(this, &UAPITestOverlay::ListFleetsButtonClicked);
 	
 }
+
+void UAPITestOverlay::ListFleetsButtonClicked()
+{
+	check(APITestManager)
+
+	APITestManager->OnListFleetsResponseReceived.AddDynamic(this, &UAPITestOverlay::OnListFleetsResponseReceived);
+	APITestManager->ListFleets();
+	ListFleetsBox->Button_ListFleets->SetIsEnabled(false);
+}
+
+void UAPITestOverlay::OnListFleetsResponseReceived(const FDSListFleetsResponse& ListFleetsResponse, bool bWasSuccessful)
+{
+	if (APITestManager->OnListFleetsResponseReceived.IsAlreadyBound(this, &UAPITestOverlay::OnListFleetsResponseReceived))
+	{
+		APITestManager->OnListFleetsResponseReceived.RemoveDynamic(this, &UAPITestOverlay::OnListFleetsResponseReceived);
+	}
+	ListFleetsBox->ScrollBox_ListFleets->ClearChildren();
+	if (bWasSuccessful)
+	{
+		for (const FString& FleetId : ListFleetsResponse.FleetIds)
+		{
+			UUFleetId* FleetIdWidget = CreateWidget<UUFleetId>(this, FleetIdWidgetClass);
+			FleetIdWidget->TextBlock_FleetId->SetText(FText::FromString(FleetId));
+			ListFleetsBox->ScrollBox_ListFleets->AddChild(FleetIdWidget);
+		}
+	}
+	else
+	{
+		UUFleetId* FleetIdWidget = CreateWidget<UUFleetId>(this, FleetIdWidgetClass);
+		FleetIdWidget->TextBlock_FleetId->SetText(FText::FromString("Something Went Wrong"));
+		ListFleetsBox->ScrollBox_ListFleets->AddChild(FleetIdWidget);
+	}
+	ListFleetsBox->Button_ListFleets->SetIsEnabled(true);
+}
+
+
 

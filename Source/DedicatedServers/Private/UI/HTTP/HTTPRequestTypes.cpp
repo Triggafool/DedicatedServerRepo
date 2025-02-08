@@ -12,7 +12,7 @@ void FDSMetaData::Dump() const
 	
 }
 
-void FDSListFleetsReponse::Dump() const
+void FDSListFleetsResponse::Dump() const
 {
 	UE_LOG(LogDedicatedServers, Log, TEXT("list-fleets Reponse: "));
 	for (const FString& FleetId : FleetIds)

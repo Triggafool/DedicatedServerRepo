@@ -9,23 +9,16 @@
 #include "Interfaces/IHttpResponse.h"
 #include "UI/HTTP/HTTPRequestTypes.h"
 
-void UAPITestManager::ListFleetsButtonClicked()
+void UAPITestManager::ListFleets()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "List Fleets Request Made");
-
 	check(APIData);
 	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
-
 	Request->OnProcessRequestComplete().BindUObject(this, &UAPITestManager::ListFleets_Response);
-
 	const FString APIUrl = APIData->GetAPIEndPoint(DedicatedServersTags::GameSessionsAPI::ListFleets);
-
 	Request->SetURL(APIUrl);
 	Request->SetVerb("GET");
 	Request->SetHeader("Content-Type", "application/json");
-
 	Request->ProcessRequest();
-	
 }
 
 void UAPITestManager::ListFleets_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
@@ -37,22 +30,19 @@ void UAPITestManager::ListFleets_Response(FHttpRequestPtr Request, FHttpResponse
 
 	if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
 	{
-		if (JsonObject->HasField(TEXT("$metadata")))
+
+		if (ContainsErrors(JsonObject))
 		{
-			
-			TSharedPtr<FJsonObject> MetaDataJsonObject = JsonObject->GetObjectField(TEXT("$metadata"));
-			FDSMetaData DSMetaData;
-			FJsonObjectConverter::JsonObjectToUStruct(MetaDataJsonObject.ToSharedRef(), &DSMetaData);
-			
-			DSMetaData.Dump();
-			
+			OnListFleetsResponseReceived.Broadcast(FDSListFleetsResponse(), false);
+			return;
 		}
-
-			FDSListFleetsReponse ListFleetsResponse;
-
-			FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &ListFleetsResponse);
-
-			ListFleetsResponse.Dump();
+		DumpMetaData(JsonObject);
+		
+		FDSListFleetsResponse ListFleetsResponse;
+		FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &ListFleetsResponse);
+		ListFleetsResponse.Dump();
+		
+		OnListFleetsResponseReceived.Broadcast(ListFleetsResponse, true);
 		
 	}
 }
