@@ -2,3 +2,25 @@
 
 
 #include "UI/APITest/APITestOverlay.h"
+
+#include "Components/Button.h"
+#include "UI/API/ListFleets/ListFleetsBox.h"
+#include "UI/APITest/APITestManager.h"
+
+
+
+void UAPITestOverlay::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	check(APITestManagerClass);
+
+	TestManager = NewObject<UAPITestManager>(this, APITestManagerClass);
+
+	check(ListFleetsBox);
+	check(ListFleetsBox->Button_ListFleets);
+	ListFleetsBox->Button_ListFleets->OnClicked.AddDynamic(TestManager, &UAPITestManager::ListFleetsButtonClicked);
+
+	
+}
+
