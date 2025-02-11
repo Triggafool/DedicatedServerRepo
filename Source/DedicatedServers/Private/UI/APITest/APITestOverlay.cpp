@@ -15,9 +15,7 @@
 void UAPITestOverlay::NativeConstruct()
 {
 	Super::NativeConstruct();
-
 	check(APITestManagerClass);
-
 	APITestManager = NewObject<UAPITestManager>(this, APITestManagerClass);
 
 	check(ListFleetsBox);

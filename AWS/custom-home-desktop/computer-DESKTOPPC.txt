@@ -1,0 +1,14 @@
+
+    "Compute": {
+        "FleetId": "fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+        "FleetArn": "arn:aws:gamelift:us-east-1:676206945030:fleet/fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+        "ComputeName": "DesktopPC",
+        "ComputeArn": "arn:aws:gamelift:us-east-1:676206945030:compute/DesktopPC",
+        "IpAddress": "192.168.50.61",
+        "ComputeStatus": "Active",
+        "Location": "custom-home-desktop",
+        "CreationTime": "2025-02-06T00:16:44.749000-05:00",
+        "GameLiftServiceSdkEndpoint": "wss://us-east-1.api.amazongamelift.com",
+        "GameLiftAgentEndpoint": "wss://us-east-1.process-manager-api.amazongamelift.com"
+    }
+}

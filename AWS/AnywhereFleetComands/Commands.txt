@@ -1,0 +1,74 @@
+0. Set profile for command prompt session
+
+set AWS_PROFILE=george
+
+0a. aws sso login --profile george
+
+1. Register your computer as a Compute Resource:
+
+aws gamelift register-compute ^
+--compute-name DesktopPC ^
+--fleet-id fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
+--ip-address 192.168.50.61 ^
+--location custom-home-desktop
+
+    "Compute": {
+        "FleetId": "fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+        "FleetArn": "arn:aws:gamelift:us-east-1:676206945030:fleet/fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+        "ComputeName": "DesktopPC",
+        "ComputeArn": "arn:aws:gamelift:us-east-1:676206945030:compute/DesktopPC",
+        "IpAddress": "192.168.50.61",
+        "ComputeStatus": "Active",
+        "Location": "custom-home-desktop",
+        "CreationTime": "2025-02-06T00:16:44.749000-05:00",
+        "GameLiftServiceSdkEndpoint": "wss://us-east-1.api.amazongamelift.com",
+        "GameLiftAgentEndpoint": "wss://us-east-1.process-manager-api.amazongamelift.com"
+    }
+}
+
+2. Get Auth-Token for DesktopPC
+
+aws gamelift get-compute-auth-token ^
+--fleet-id fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
+--compute-name DesktopPC
+
+{
+    "FleetId": "fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+    "FleetArn": "arn:aws:gamelift:us-east-1:676206945030:fleet/fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
+    "ComputeName": "DesktopPC",
+    "ComputeArn": "arn:aws:gamelift:us-east-1:676206945030:compute/DesktopPC",
+    "AuthToken": "53942437-ae14-4d68-9ea2-5fa71f360023",
+    "ExpirationTimestamp": "2025-02-06T03:22:37-05:00"
+}
+
+3. Run Dedicated Server Build: (update build, authtoken)
+
+"D:\Game\DedicatedServer\Build\Build_2\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
+-authtoken=5d38d480-2337-4a28-973c-6b68cf7bde44 ^
+-hostid=DesktopPC -fleetid=fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
+-websocketurl=wss://us-east-1.api.amazongamelift.com ^
+-port=7777
+
+
+4. Create Game Session
+
+aws gamelift create-game-session ^
+--fleet-id fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c ^
+--name DebugGameSession ^
+--maximum-player-session-count 4 ^
+--location custom-home-desktop
+
+5. Create Player Session
+
+aws gamelift create-player-session ^
+--game-session-id arn:aws:gamelift:us-east-1::gamesession/fleet-a787a682-8a99-445d-aa3f-e50e256e664e/gsess-e6314d0c-442d-4c25-9279-4f309796e28e ^
+--player-id NewPlayerID
+
+6. Upload build (update path, version)
+aws gamelift upload-build ^
+--name FPSTemplateServerBuild2 ^
+--operating-system WINDOWS_2016 ^
+--server-sdk-version "5.2.0" ^
+--build-root "D:\Game\DedicatedServer\Build\Build_2\WindowsServer" ^
+--build-version 2.0.0 ^
+--region us-east-1
