@@ -6,7 +6,10 @@
 #include "UObject/Object.h"
 #include "HTTPRequestManager.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAPIStatusMessage, const FString&, StatusMessage, bool, bShouldResetWidgets);
+class UDSLocalPlayerSubSystem;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAPIStatusMessage, const FString&, StatusMessage, bool,
+                                             bShouldResetWidgets);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAPIRequestSucceeded);
 
 class UAPIData;
 class FJsonObject;
@@ -18,7 +21,8 @@ class DEDICATEDSERVERS_API UHTTPRequestManager : public UObject
 {
 	GENERATED_BODY()
 
-
+public:
+	UDSLocalPlayerSubSystem* GetDSLocalPlayerSubsytem();
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAPIData> APIData;

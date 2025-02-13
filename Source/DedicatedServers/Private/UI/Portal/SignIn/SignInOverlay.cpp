@@ -6,6 +6,7 @@
 #include "aws/gamelift/server/model/GameSession.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "UI/API/GameSessions/JoinGame.h"
 #include "UI/GameSessions/GameSessionsManager.h"
@@ -34,16 +35,6 @@ void USignInOverlay::NativeConstruct()
 
 	// End of Join Game Overlay Stuff
 	
-	check(IsValid(Button_SignIn_Test))
-	check(IsValid(Button_SignUp_Test))
-	check(IsValid(Button_SuccessConfirm_Test))
-	check(IsValid(Button_ConfirmSignUp_Test))
-
-	Button_SignIn_Test->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignInPage);
-	Button_SignUp_Test->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignUpPage);
-	Button_ConfirmSignUp_Test->OnClicked.AddDynamic(this, &USignInOverlay::ShowConfirmSignUpPage);
-	Button_SuccessConfirm_Test->OnClicked.AddDynamic(this, &USignInOverlay::ShowSuccessConfirmedPage);
-
 	check(IsValid(SignInPage))
 	check(IsValid(SignInPage->Button_SignIn))
 	check(IsValid(SignInPage->Button_SignUp))
@@ -52,7 +43,8 @@ void USignInOverlay::NativeConstruct()
 	SignInPage->Button_SignIn->OnClicked.AddDynamic(this, &USignInOverlay::SignInButtonClicked);
 	SignInPage->Button_SignUp->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignUpPage);
 	SignInPage->Button_Quit->OnClicked.AddDynamic(PortalManager, &UPortalManager::QuitGame);
-
+	PortalManager->SignInStatusMessageDelegate.AddDynamic(SignInPage, &USignInPage::UpdateStatusMessage);
+	
 	check(IsValid(SignUpPage))
 	check(IsValid(SignUpPage->Button_Back))
 	check(IsValid(SignUpPage->Button_SignUp))
@@ -60,7 +52,10 @@ void USignInOverlay::NativeConstruct()
 	SignUpPage->Button_Back->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignInPage);
 	SignUpPage->Button_SignUp->OnClicked.AddDynamic(this, &USignInOverlay::SignUpButtonClicked);
 	PortalManager->SignUpStatusMessageDelegate.AddDynamic(SignUpPage, &USignUpPage::UpdateStatusMessage);
-
+	PortalManager->ConfirmStatusMessageDelegate.AddDynamic(ConfirmSignUpPage, &UConfirmSignUpPage::UpdateStatusMessage);
+	PortalManager->OnSignUpSucceeded.AddDynamic(this, &USignInOverlay::OnSignUpSucceeded);
+	PortalManager->OnConfirmSucceeded.AddDynamic(this, &USignInOverlay::OnConfirmSucceeded);
+	
 	check(IsValid(ConfirmSignUpPage))
 	check(IsValid(ConfirmSignUpPage->Button_Confirm))
 	check(IsValid(ConfirmSignUpPage->Button_Back))
@@ -122,6 +117,20 @@ void USignInOverlay::ConfirmButtonClicked()
 
 	PortalManager->Confirm(ConfirmationCode);
 }
+
+void USignInOverlay::OnSignUpSucceeded()
+{
+	SignUpPage->ClearTextBoxes();
+	ConfirmSignUpPage->TextBlock_DestinationEmail->SetText(FText::FromString(PortalManager->LastSignUpResponse.CodeDeliveryDetails.Destination));
+	ShowConfirmSignUpPage();
+}
+
+void USignInOverlay::OnConfirmSucceeded()
+{
+	ConfirmSignUpPage->ClearTextBoxes();
+	ShowSuccessConfirmedPage();
+}
+
 // -------------------- Join Game Functionality To be Removed! -------------------------------------------------// 
 void USignInOverlay::OnJoinGameButtonClicked()
 {

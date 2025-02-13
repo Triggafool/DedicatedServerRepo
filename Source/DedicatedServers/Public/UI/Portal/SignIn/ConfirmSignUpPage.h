@@ -30,5 +30,15 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TextBlock_DestinationEmail;
+
+	void ClearTextBoxes();
+
+	UFUNCTION()
+	void UpdateStatusMessage(const FString& Message, bool bResetWidget);
+protected:
+	void NativeConstruct() override;
+private:
+	UFUNCTION()
+	void UpdateConfirmButtonState(const FText& Text);
 	
 };

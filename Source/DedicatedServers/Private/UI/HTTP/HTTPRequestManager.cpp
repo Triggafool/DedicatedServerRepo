@@ -2,10 +2,24 @@
 
 
 #include "UI/HTTP/HTTPRequestManager.h"
-
 #include "HTTPRequestTypes.h"
 #include "JsonObjectConverter.h"
+#include "Player/DSLocalPlayerSubSystem.h"
 #include "DedicatedServers/DedicatedServers.h"
+
+UDSLocalPlayerSubSystem* UHTTPRequestManager::GetDSLocalPlayerSubsytem()
+{
+	APlayerController* LocalPlayerController = GEngine->GetFirstLocalPlayerController(GetWorld());
+	if (LocalPlayerController)
+	{
+		ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(LocalPlayerController->Player);
+		if (IsValid(LocalPlayer))
+		{
+			return LocalPlayer->GetSubsystem<UDSLocalPlayerSubSystem>();
+		}
+	}
+	return nullptr;
+}
 
 bool UHTTPRequestManager::ContainsErrors(TSharedPtr<FJsonObject> JsonObject)
 {
