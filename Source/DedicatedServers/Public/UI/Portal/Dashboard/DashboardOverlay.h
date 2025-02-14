@@ -40,4 +40,44 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_CareerPage;
+
+protected:
+	virtual void NativeConstruct() override;
+
+private:
+	UFUNCTION()
+	void ShowGamePage();
+
+	UFUNCTION()
+	void ShowLeaderboardPage();
+
+	UFUNCTION()
+	void ShowCareerPage();
+	
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,10 +7,10 @@ set AWS_PROFILE=george
 1. Register your computer as a Compute Resource:
 
 aws gamelift register-compute ^
---compute-name DesktopPC ^
---fleet-id fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
---ip-address 192.168.50.61 ^
---location custom-home-desktop
+--compute-name DesktopActuallyOnline ^
+--fleet-id fleet-f0c85149-a991-4a8e-98c6-47c78e4ef747 ^
+--ip-address 68.14.112.237 ^
+--location custom-home-online2
 
     "Compute": {
         "FleetId": "fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
@@ -29,8 +29,8 @@ aws gamelift register-compute ^
 2. Get Auth-Token for DesktopPC
 
 aws gamelift get-compute-auth-token ^
---fleet-id fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
---compute-name DesktopPC
+--fleet-id fleet-f0c85149-a991-4a8e-98c6-47c78e4ef747 ^
+--compute-name DesktopActuallyOnline
 
 {
     "FleetId": "fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
@@ -43,9 +43,9 @@ aws gamelift get-compute-auth-token ^
 
 3. Run Dedicated Server Build: (update build, authtoken)
 
-"D:\Game\DedicatedServer\Build\Build_2\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
--authtoken=5d38d480-2337-4a28-973c-6b68cf7bde44 ^
--hostid=DesktopPC -fleetid=fleet-c85a1d4c-af75-4dca-af85-20ded873bbfd ^
+"D:\Game\DedicatedServer\Build\Build_3\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
+-authtoken=9ff608b7-bb19-4fcf-88d9-cec63728bd01 ^
+-hostid=DesktopActuallyOnline -fleetid=fleet-f0c85149-a991-4a8e-98c6-47c78e4ef747 ^
 -websocketurl=wss://us-east-1.api.amazongamelift.com ^
 -port=7777
 
@@ -66,9 +66,9 @@ aws gamelift create-player-session ^
 
 6. Upload build (update path, version)
 aws gamelift upload-build ^
---name FPSTemplateServerBuild2 ^
+--name FPSTemplateServerBuild3 ^
 --operating-system WINDOWS_2016 ^
 --server-sdk-version "5.2.0" ^
---build-root "D:\Game\DedicatedServer\Build\Build_2\WindowsServer" ^
---build-version 2.0.0 ^
+--build-root "D:\Game\DedicatedServer\Build\Build_3\WindowsServer" ^
+--build-version 1.0.5 ^
 --region us-east-1

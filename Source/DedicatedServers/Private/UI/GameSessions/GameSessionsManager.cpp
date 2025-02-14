@@ -9,6 +9,7 @@
 #include "GameplayTags/DedicatedServersTags.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/DSLocalPlayerSubSystem.h"
 #include "UI/HTTP/HTTPRequestTypes.h"
 
 class IHttpRequest;
@@ -23,6 +24,15 @@ void UGameSessionsManager::JoinGameSession()
 	Request->SetURL(APIUrl);
 	Request->SetVerb("POST");
 	Request->SetHeader("Content-Type", "application/json");
+
+
+	UDSLocalPlayerSubSystem* LocalPlayerSubSystem = GetDSLocalPlayerSubsytem();
+
+	if(IsValid(LocalPlayerSubSystem))
+	{
+		Request->SetHeader(TEXT("Authorization"), LocalPlayerSubSystem->GetAuthResults().AccessToken);
+	}
+	
 	Request->ProcessRequest();
 }
 
@@ -95,7 +105,7 @@ void UGameSessionsManager::CreatePlayerSession_Response(FHttpRequestPtr Request,
 
 		PlayerSession.Dump();
 
-		FInputModeGameAndUI InputModeData;
+		FInputModeGameOnly InputModeData;
 		
 		APlayerController* LocalPlayerController = GEngine->GetFirstLocalPlayerController(GetWorld());
 		if (LocalPlayerController)

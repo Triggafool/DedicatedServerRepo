@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/DSLocalPlayerSubSystem.h"
 #include "UI/HTTP/HTTPRequestTypes.h"
+#include "GameFramework/HUD.h"
+#include "UI/Interfaces/HUDManagement.h"
 
 class IHttpRequest;
 
@@ -23,14 +25,16 @@ void UPortalManager::SignIn(const FString& Username, const FString& Password)
 	Request->SetVerb("POST");
 	Request->SetHeader("Content-Type", "application/json");
 
+	LastUserName = Username;
 	//LastUserName = Username;
 	const TMap<FString, FString> Params = {
-		{TEXT("username"), Username },
+		{TEXT("username"), Username},
 		{TEXT("password"), Password},
 	};
 	Request->SetContentAsString(SerializeJsonContent(Params));
 	Request->ProcessRequest();
 }
+
 
 void UPortalManager::SignIn_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
@@ -50,15 +54,36 @@ void UPortalManager::SignIn_Response(FHttpRequestPtr Request, FHttpResponsePtr R
 			return;
 		}
 	}
-
+	
 	FDSInitiateAuthResponse InitiateAuthResponse;
 	FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), &InitiateAuthResponse);
 
 	UDSLocalPlayerSubSystem* LocalPlayerSubSystem = GetDSLocalPlayerSubsytem();
 	LocalPlayerSubSystem->InitializeTokens(InitiateAuthResponse.AuthenticationResult, this);
+	LocalPlayerSubSystem->Username = LastUserName;
+	LocalPlayerSubSystem->Email = InitiateAuthResponse.email;
+
+	SignInSuccessful();
 	
-	SignInStatusMessageDelegate.Broadcast(TEXT("Signed In."), false);
 }
+
+void UPortalManager::SignInSuccessful()
+{
+	APlayerController* LocalPlayerController = GEngine->GetFirstLocalPlayerController(GetWorld());
+	if (LocalPlayerController)
+	{
+		AHUD* HUD = LocalPlayerController->GetHUD();
+		if (HUD && HUD->Implements<UHUDManagement>())
+		{
+			IHUDManagement* HUDManagement = Cast<IHUDManagement>(HUD);
+			if (HUDManagement)
+			{
+				HUDManagement->OnSignIn();
+			}
+		}
+	}
+}
+
 
 void UPortalManager::SignUp(const FString& Username, const FString& Password, const FString& Email)
 {
@@ -80,6 +105,8 @@ void UPortalManager::SignUp(const FString& Username, const FString& Password, co
 	Request->SetContentAsString(SerializeJsonContent(Params));
 	Request->ProcessRequest();
 }
+
+
 
 void UPortalManager::SignUp_Reponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
@@ -211,4 +238,58 @@ void UPortalManager::QuitGame()
 
 }
 
+void UPortalManager::SignOut(const FString& AccessToken)
+{
+	check(APIData);
+	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
+	Request->OnProcessRequestComplete().BindUObject(this, &UPortalManager::SignOut_Response);
+	const FString APIUrl = APIData->GetAPIEndPoint(DedicatedServersTags::PortalAPI::SignOut);
+	Request->SetURL(APIUrl);
+	Request->SetVerb("POST");
+	Request->SetHeader("Content-Type", "application/json");
+
+	//LastUserName = Username;
+	const TMap<FString, FString> Params = {
+		{TEXT("accessToken"), AccessToken },
+	};
+	Request->SetContentAsString(SerializeJsonContent(Params));
+	Request->ProcessRequest();
+}
+
+void UPortalManager::SuccessfulSignOut()
+{
+	APlayerController* LocalPlayerController = GEngine->GetFirstLocalPlayerController(GetWorld());
+	if (LocalPlayerController)
+	{
+		AHUD* HUD = LocalPlayerController->GetHUD();
+		if (HUD && HUD->Implements<UHUDManagement>())
+		{
+			if (IHUDManagement* HUDManagement = Cast<IHUDManagement>(HUD))
+			{
+				HUDManagement->OnSignOut();
+			}
+		}
+	}
+}
+
+void UPortalManager::SignOut_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	if (!bWasSuccessful)
+	{
+		return;
+	}
+	
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+
+	if (FJsonSerializer::Deserialize(JsonReader, JsonObject))
+	{
+		if (ContainsErrors(JsonObject))
+		{
+			return;
+		}
+	}
+
+	SuccessfulSignOut();
+}
 

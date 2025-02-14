@@ -7,8 +7,7 @@
 #include "HTTPRequestManager.generated.h"
 
 class UDSLocalPlayerSubSystem;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAPIStatusMessage, const FString&, StatusMessage, bool,
-                                             bShouldResetWidgets);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAPIStatusMessage, const FString&, StatusMessage, bool, bShouldResetWidgets);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAPIRequestSucceeded);
 
 class UAPIData;
@@ -23,10 +22,11 @@ class DEDICATEDSERVERS_API UHTTPRequestManager : public UObject
 
 public:
 	UDSLocalPlayerSubSystem* GetDSLocalPlayerSubsytem();
-protected:
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAPIData> APIData;
-
+	
+protected:
 	bool ContainsErrors(TSharedPtr<FJsonObject> JsonObject);
 	void DumpMetaData(TSharedPtr<FJsonObject> JsonObject);
 

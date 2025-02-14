@@ -2,14 +2,11 @@
 
 
 #include "UI/Portal/SignIn/SignInOverlay.h"
-
-#include "aws/gamelift/server/model/GameSession.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "UI/API/GameSessions/JoinGame.h"
-#include "UI/GameSessions/GameSessionsManager.h"
 #include "UI/Portal/PortalManager.h"
 #include "UI/Portal/Signin/SignInPage.h"
 #include "UI/Portal/Signin/SignUpPage.h"
@@ -23,17 +20,6 @@ void USignInOverlay::NativeConstruct()
 	check(PortalManagerClass);
 
 	PortalManager = NewObject<UPortalManager>(this, PortalManagerClass);
-
-	// Will be removed when we create an overlay for the Game Sessions Specifically,
-	// I just didn't like breaking the functionality we already created... make me sad.
-	check(JoinGameWidget)
-	check(GameSessionManagerClass)
-	GameSessionManager = NewObject<UGameSessionsManager>(this, GameSessionManagerClass);
-
-	check(GameSessionManager)
-	JoinGameWidget->Button_JoinGame->OnClicked.AddDynamic(this, &USignInOverlay::OnJoinGameButtonClicked);
-
-	// End of Join Game Overlay Stuff
 	
 	check(IsValid(SignInPage))
 	check(IsValid(SignInPage->Button_SignIn))
@@ -131,28 +117,3 @@ void USignInOverlay::OnConfirmSucceeded()
 	ShowSuccessConfirmedPage();
 }
 
-// -------------------- Join Game Functionality To be Removed! -------------------------------------------------// 
-void USignInOverlay::OnJoinGameButtonClicked()
-{
-	check(IsValid(GameSessionManager))
-	check(IsValid(JoinGameWidget));
-	check(IsValid(JoinGameWidget->Button_JoinGame))
-	
-	GameSessionManager->BroadcastJoinGameSessionMessage.AddDynamic(this, &USignInOverlay::UpdateJoinGameStatusMessage);
-	GameSessionManager->JoinGameSession();
-	JoinGameWidget->Button_JoinGame->SetIsEnabled(false);
-
-}
-
-void USignInOverlay::UpdateJoinGameStatusMessage(const FString& StatusMessage, bool bResetJoinGameButton)
-{
-	check(IsValid(JoinGameWidget));
-	check(IsValid(JoinGameWidget->Button_JoinGame))
-
-	if (bResetJoinGameButton)
-	{
-		JoinGameWidget->Button_JoinGame->SetIsEnabled(true);
-	}
-
-	JoinGameWidget->SetStatusMessage(StatusMessage);
-}

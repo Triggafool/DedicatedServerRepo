@@ -30,16 +30,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> WidgetSwitcher;
 
-	// Below is to be removed and Added to its own overlay class soon for game session joining.
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UJoinGame> JoinGameWidget;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameSessionsManager> GameSessionManagerClass;
-
-	UPROPERTY()
-	TObjectPtr<UGameSessionsManager> GameSessionManager;
-
 protected:
 	virtual void NativeConstruct() override;
 
@@ -86,11 +76,5 @@ private:
 
 	UFUNCTION()
 	void OnConfirmSucceeded();
-
-	// Join Game Overlay Stuff to be Moved Soon.
-	UFUNCTION()
-	void OnJoinGameButtonClicked();
-
-	UFUNCTION()
-	void UpdateJoinGameStatusMessage(const FString& StatusMessage, bool bResetJoinGameButton);
+	
 };

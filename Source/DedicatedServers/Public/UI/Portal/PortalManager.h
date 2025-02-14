@@ -37,23 +37,21 @@ public:
 	FOnAPIRequestSucceeded OnConfirmSucceeded;
 	
 	void SignIn(const FString& Username, const FString& Password);
+	void SignOut(const FString& AccessToken);
+	void SuccessfulSignOut();
+	void SignInSuccessful();
 	void SignUp(const FString& Username, const FString& Password, const FString& Email);
 	void Confirm(const FString& ConfirmationCode);
-
-
 	
 	UFUNCTION()
 	void QuitGame();
-
-
-	
 	
 	FString LastUserName{};
 	
 	FDSSignUpResponse LastSignUpResponse;
 
 private:
-
+	void SignOut_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	void SignUp_Reponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	void SignIn_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	void ConfirmSignUp_Response(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
