@@ -83,7 +83,7 @@ void UGameSessionsManager::FindOrCreateGameSession_Response(FHttpRequestPtr Requ
 void UGameSessionsManager::CreatePlayerSession_Response(FHttpRequestPtr Request, FHttpResponsePtr Response,
 	bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player Session Response Received.");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Edit: Player Session Response Received.");
 
 	if (!bWasSuccessful)
 	{
@@ -113,10 +113,11 @@ void UGameSessionsManager::CreatePlayerSession_Response(FHttpRequestPtr Request,
 			LocalPlayerController->SetInputMode(InputModeData);
 			LocalPlayerController->SetShowMouseCursor(false);
 		}
+		const FString Options = "?PlayerSessionId=" + PlayerSession.PlayerSessionId + "?Username=" + PlayerSession.PlayerId;
 
 		const FString IpAndPort = PlayerSession.IpAddress + TEXT(":") + FString::FromInt(PlayerSession.Port);
 		const FName Address(*IpAndPort);
-		UGameplayStatics::OpenLevel(this, Address);
+		UGameplayStatics::OpenLevel(this, Address, true, Options);
 	}
 }
 
@@ -125,7 +126,12 @@ void UGameSessionsManager::HandleGameSessionStatus(const FString& Status, const 
 	if (Status.Equals(TEXT("ACTIVE")))
 	{
 		BroadcastJoinGameSessionMessage.Broadcast(TEXT("Found Game Session. Creating a Player Session and Joining Game"), false);
-		TryCreatePlayerSession(GetUniquePlayerId(), GameSessionId);
+
+		if (UDSLocalPlayerSubSystem* DSLocalPlayerSubSystem = GetDSLocalPlayerSubsytem(); IsValid(DSLocalPlayerSubSystem))
+		{
+			TryCreatePlayerSession(DSLocalPlayerSubSystem->Username, GameSessionId);
+		}
+
 	}
 	else if (Status.Equals(TEXT("ACTIVATING")))
 	{

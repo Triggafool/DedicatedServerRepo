@@ -50,7 +50,7 @@ void UTimerWidget::OnTimerStopped(float CountdownTimeLeft, ECountdownTimerType T
 {
 	if (Type != TimerType) return;
 	TimerStopped();
-	K2_OnTimerUpdated(CountdownTimeLeft, TimerType);
+	K2_OnTimerStopped(CountdownTimeLeft, TimerType);
 }
 
 FString UTimerWidget::FormatTimeAsString(float TimeSeconds) const
@@ -80,6 +80,7 @@ void UTimerWidget::TimerStarted(float InitialTime)
 {
 	bActive = true;
 	TextBlock_Time->SetRenderOpacity(1.f);
+	K2_OnTimerStarted(InitialTime, TimerType);
 
 }
 

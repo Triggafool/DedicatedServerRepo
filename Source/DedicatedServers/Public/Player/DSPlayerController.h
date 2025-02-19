@@ -17,12 +17,22 @@ class DEDICATEDSERVERS_API ADSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-
+	ADSPlayerController();
+	
 	UFUNCTION(Client, Reliable)
 	void Client_TimerUpdated(float CountdownTimeLeft, ECountdownTimerType Type) const;
 
 	UFUNCTION(Client, Reliable)
 	void Client_TimerStopped(float CountdownTimeLeft, ECountdownTimerType Type) const;
+
+	virtual void ReceivedPlayer() override;
+
+	virtual void OnRep_PlayerState() override;
+
+	virtual void PostSeamlessTravel() override;
+	
+	UFUNCTION(Client, Reliable)
+	void Client_SetInputEnabled(bool bEnabled);
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnTimerStateChangedDelegate OnTimerUpdated;
@@ -30,22 +40,22 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTimerStateChangedDelegate OnTimerStopped;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnTimerStateChangedDelegate OnTimerPaused;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnTimerStateChangedDelegate OnTimerResumed;
-	
-	ADSPlayerController();
-	virtual void ReceivedPlayer() override;
+	UPROPERTY(BlueprintReadOnly)
+	FString Username;
+	UPROPERTY(BlueprintReadOnly)
+	FString PlayerSessionId;
 
 protected:
 
+	virtual void BeginPlay() override;
+	
 	UFUNCTION(Server, Reliable)
 	void Server_Ping(float TimeOfRequest);
 
 	UFUNCTION(Client, Reliable)
 	void Client_Pong(float TimeOfRequest);
+
+	
 private:
 	float SingleTripTime;
 };

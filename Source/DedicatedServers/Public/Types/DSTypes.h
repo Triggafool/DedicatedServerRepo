@@ -30,6 +30,14 @@ enum class EMatchStatus : uint8
 	SeamlessTraveling
 };
 
+UENUM()
+enum class ELobbyStatus : uint8
+{
+	WaitingForPlayers,
+	CountdownToSeamlessTravel,
+	SeamlessTraveling
+};
+
 USTRUCT(BlueprintType)
 struct FCountdownTimerHandle
 {

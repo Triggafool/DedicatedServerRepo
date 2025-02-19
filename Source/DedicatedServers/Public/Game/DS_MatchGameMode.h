@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY()
 	EMatchStatus MatchStatus = EMatchStatus::WaitingForPlayers;
+
+	virtual void Logout(AController* Exiting) override;
+	virtual void InitSeamlessTravelPlayer(AController* NewController) override;
 	
 protected:
 	
@@ -36,6 +39,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	FCountdownTimerHandle PostMatchTimer;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> LobbyMap;
 
+	void SetClientInputEnabled(bool bEnabled);
 	
 };

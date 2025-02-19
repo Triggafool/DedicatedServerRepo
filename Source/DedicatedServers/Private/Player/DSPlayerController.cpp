@@ -6,6 +6,8 @@
 ADSPlayerController::ADSPlayerController()
 {
 	SingleTripTime = 0.f;
+	Username = "";
+	PlayerSessionId = "";
 }
 
 void ADSPlayerController::Client_TimerUpdated_Implementation(float CountdownTimeLeft, ECountdownTimerType Type) const
@@ -24,9 +26,48 @@ void ADSPlayerController::ReceivedPlayer()
 
 	if (GetNetMode() == NM_Standalone) return;
 
-	if(IsLocalController())
+}
+
+void ADSPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (IsLocalController())
 	{
+		DisableInput(this);
+	}
+	
+}
+
+void ADSPlayerController::PostSeamlessTravel()
+{
+	Super::PostSeamlessTravel();
+
+	if (IsLocalController())
+	{
+		DisableInput(this);
 		Server_Ping(GetWorld()->GetTimeSeconds());
+	}
+}
+
+void ADSPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	if (GetNetMode() == NM_Standalone)
+	{
+		DisableInput(this);
+	}
+}
+
+void ADSPlayerController::Client_SetInputEnabled_Implementation(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		EnableInput(this);
+	}
+	else
+	{
+		DisableInput(this);
 	}
 }
 

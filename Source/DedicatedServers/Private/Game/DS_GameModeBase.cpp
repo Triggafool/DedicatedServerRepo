@@ -1,6 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Game/DS_GameModeBase.h"
-
+#include "GameLiftServerSDK.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/DSPlayerController.h"
 
 void ADS_GameModeBase::StartCountdownTimer(FCountdownTimerHandle& CountdownTimerHandle)
@@ -8,7 +9,6 @@ void ADS_GameModeBase::StartCountdownTimer(FCountdownTimerHandle& CountdownTimer
 	CountdownTimerHandle.TimerFinishedDelegate.BindWeakLambda(this,
 		[&]()
 		{
-			StopCountdownTimer(CountdownTimerHandle);
 			OnCountdownTimerFinished(CountdownTimerHandle.Type);
 		}
 	);
@@ -64,7 +64,7 @@ void ADS_GameModeBase::StopCountdownTimer(FCountdownTimerHandle& CountdownTimerH
 
 void ADS_GameModeBase::OnCountdownTimerFinished(ECountdownTimerType Type)
 {
-	
+
 }
 
 void ADS_GameModeBase::UpdateCountdownTimer(FCountdownTimerHandle& CountdownTimerHandle)
@@ -78,4 +78,34 @@ void ADS_GameModeBase::UpdateCountdownTimer(FCountdownTimerHandle& CountdownTime
 			DSPlayerController->Client_TimerUpdated(CountdownTimeLeft, CountdownTimerHandle.Type);
 		}
 	}
+}
+
+void ADS_GameModeBase::TrySeamlessTravel(TSoftObjectPtr<UWorld> DestinationMap)
+{
+	// init seamless travel
+
+	const FString MapName = DestinationMap.ToSoftObjectPath().GetAssetName();
+	if (GIsEditor)
+	{
+		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
+	}else
+	{
+		GetWorld()->ServerTravel(MapName);
+	}
+}
+
+void ADS_GameModeBase::RemovePlayerSession(AController* Exiting)
+{
+	ADSPlayerController* DSPlayerController = Cast<ADSPlayerController>(Exiting);
+	if (!IsValid(DSPlayerController)) return;
+	
+#if WITH_GAMELIFT
+	
+	const FString& PlayerSessionId = DSPlayerController->PlayerSessionId;
+	if (!PlayerSessionId.IsEmpty())
+	{
+		Aws::GameLift::Server::RemovePlayerSession(TCHAR_TO_ANSI(*PlayerSessionId));
+	}
+	
+#endif
 }

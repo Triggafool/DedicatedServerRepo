@@ -109,7 +109,7 @@ struct FDSGameSession
 };
 
 USTRUCT()
-struct FDSPlayerSession
+struct  FDSPlayerSession
 {
 	GENERATED_BODY()
 
