@@ -83,8 +83,6 @@ void UGameSessionsManager::FindOrCreateGameSession_Response(FHttpRequestPtr Requ
 void UGameSessionsManager::CreatePlayerSession_Response(FHttpRequestPtr Request, FHttpResponsePtr Response,
 	bool bWasSuccessful)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Edit: Player Session Response Received.");
-
 	if (!bWasSuccessful)
 	{
 		BroadcastJoinGameSessionMessage.Broadcast(HTTPStatusMessages::SomethingWentWrong, true);

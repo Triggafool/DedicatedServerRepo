@@ -9,6 +9,7 @@
 #include "DS_LobbyGameMode.generated.h"
 
 class UDS_GameInstanceSubsystem;
+class ADSPlayerController;
 /**
  * 
  */
@@ -38,13 +39,12 @@ protected:
 	virtual void Logout(AController* Exiting) override;
 	virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 	virtual FString InitNewPlayer(APlayerController* NewPlayerController, const FUniqueNetIdRepl& UniqueId, const FString& Options, const FString& Portal) override;
-
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> DestinationMap;
 	
 private:
-
+	
 	UPROPERTY(EditDefaultsOnly)
 	FCountdownTimerHandle LobbyCountdownTimer;
 	
@@ -53,8 +53,12 @@ private:
 
 	void InitGameLift();
 	void SetServerParameters(FServerParameters& OutServerParameters);
-
 	void TryAcceptPlayerSession(const FString& PlayerSessionId, const FString& Username, FString& OutErrorMessage);
 
+	// Dealing with Fast Array Serializer
+	void AddPlayerInfoToLobbyState(AController* Player);
+	void RemovePlayerInfoFromLobbyState(AController* Player);
 
+	UFUNCTION()
+	void OnLobbyStateInitialized(ALobbyState* LobbyState);
 };
