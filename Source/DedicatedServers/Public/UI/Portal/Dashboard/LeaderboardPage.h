@@ -13,4 +13,6 @@ UCLASS()
 class DEDICATEDSERVERS_API ULeaderboardPage : public UUserWidget
 {
 	GENERATED_BODY()
+
+	
 };

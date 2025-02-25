@@ -23,7 +23,6 @@ public:
 	/* IPortalManagement Interface */
 	virtual void RefreshTokens(const FString& RefreshToken) override;
 	/* </IPortalManagement> */
-
 	
 	UPROPERTY(BlueprintAssignable)
 	FAPIStatusMessage SignUpStatusMessageDelegate;

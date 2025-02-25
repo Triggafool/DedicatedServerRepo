@@ -26,6 +26,10 @@ struct FSpecialElimInfo
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 StreakCount = 0;
+
+	// Career Page Additions
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString CareerPageAchievementName = FString();
 };
 
 /**
