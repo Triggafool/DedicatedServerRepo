@@ -9,7 +9,7 @@
 #include "GameStatsManager.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRetrieveMatchStatsResponseReceived, const FDSRetrieveMatchStatsResponse&, Response);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRetrieveLeaderboard, const TArray<FDSLeaderboardItem>&, Leaderboard);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRetrieveLeaderboard, TArray<FDSLeaderboardItem>&, Leaderboard);
 
 struct FDSRecordMatchStatsInput;
 /**
@@ -28,6 +28,9 @@ public:
 
 	UPROPERTY()
 	FAPIStatusMessage RetrieveGameStatsStatusMessage;
+
+	UPROPERTY()
+	FAPIStatusMessage RetrieveLeaderboardStatusMessage;
 
 	UPROPERTY()
 	FOnRetrieveLeaderboard OnRetrieveLeaderboardDelegate;

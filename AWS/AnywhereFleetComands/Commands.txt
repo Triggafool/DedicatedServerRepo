@@ -44,7 +44,7 @@ aws gamelift get-compute-auth-token ^
 3. Run Dedicated Server Build: (update build, authtoken)
 
 "D:\Game\DedicatedServer\Build\Build4\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
--authtoken=11f1a73f-03b0-407a-964a-caf4a4708d27 ^
+-authtoken=25dc94ac-ae34-4788-b07a-a10e0e1155ed ^
 -hostid=DesktopActuallyOnline -fleetid=fleet-62fcd79e-c91a-46ab-80a7-8ca666ac4ef6 ^
 -websocketurl=wss://us-east-1.api.amazongamelift.com ^
 -port=7777

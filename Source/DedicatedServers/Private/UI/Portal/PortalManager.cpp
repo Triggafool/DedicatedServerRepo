@@ -258,6 +258,14 @@ void UPortalManager::SignOut(const FString& AccessToken)
 
 void UPortalManager::SuccessfulSignOut()
 {
+
+	if (UDSLocalPlayerSubSystem* DSLocalPlayerSubSystem = GetDSLocalPlayerSubsytem(); IsValid(DSLocalPlayerSubSystem))
+	{
+		DSLocalPlayerSubSystem->Username = "";
+		DSLocalPlayerSubSystem->Password = "";
+		DSLocalPlayerSubSystem->Email = "";
+	}
+	
 	APlayerController* LocalPlayerController = GEngine->GetFirstLocalPlayerController(GetWorld());
 	if (LocalPlayerController)
 	{

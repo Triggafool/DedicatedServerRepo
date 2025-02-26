@@ -22,6 +22,8 @@ void UDashboardOverlay::NativeConstruct()
 
 	GameStatsManager->OnRetrieveMatchStatsResponse.AddDynamic(CareerPage, &UCareerPage::OnRetrieveMatchStats);
 	GameStatsManager->RetrieveGameStatsStatusMessage.AddDynamic(CareerPage, &UCareerPage::SetStatusMessage);
+	GameStatsManager->OnRetrieveLeaderboardDelegate.AddDynamic(LeaderboardPage, &ULeaderboardPage::PopulateLeaderboard);
+	GameStatsManager->RetrieveLeaderboardStatusMessage.AddDynamic(LeaderboardPage, &ULeaderboardPage::SetStatusMessage);
 
 	Button_GamePage->OnClicked.AddDynamic(this, &UDashboardOverlay::ShowGamePage);
 	Button_CareerPage->OnClicked.AddDynamic(this, &UDashboardOverlay::ShowCareerPage);
@@ -50,6 +52,8 @@ void UDashboardOverlay::ShowLeaderboardPage()
 	WidgetSwitcher->SetActiveWidget(LeaderboardPage);
 	EnableButtons();
 	Button_LeaderboardPage->SetIsEnabled(false);
+	GameStatsManager->RetrieveLeaderboard();
+	
 }
 
 void UDashboardOverlay::EnableButtons()

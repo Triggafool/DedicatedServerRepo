@@ -76,5 +76,7 @@ private:
 
 	UFUNCTION()
 	void OnConfirmSucceeded();
+
+	void AutoSignIn();
 	
 };

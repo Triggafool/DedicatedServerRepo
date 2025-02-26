@@ -6,6 +6,7 @@
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
+#include "Player/DSLocalPlayerSubSystem.h"
 #include "UI/API/GameSessions/JoinGame.h"
 #include "UI/Portal/PortalManager.h"
 #include "UI/Portal/Signin/SignInPage.h"
@@ -53,6 +54,8 @@ void USignInOverlay::NativeConstruct()
 
 	SuccessConfirmedPage->Button_Ok->OnClicked.AddDynamic(this, &USignInOverlay::ShowSignInPage);
 
+	ShowSignInPage();
+	AutoSignIn();
 }
 
 void USignInOverlay::ShowSignInPage()
@@ -65,6 +68,7 @@ void USignInOverlay::ShowSignUpPage()
 {
 	check(IsValid(WidgetSwitcher) && IsValid(SignUpPage))
 	WidgetSwitcher->SetActiveWidget(SignUpPage);
+	
 }
 
 void USignInOverlay::ShowConfirmSignUpPage()
@@ -84,6 +88,11 @@ void USignInOverlay::SignInButtonClicked()
 	const FString Username = SignInPage->TextBox_UserName->GetText().ToString();
 	const FString Password = SignInPage->TextBox_Password->GetText().ToString();
 
+	if (UDSLocalPlayerSubSystem* DSLocalPlayerSubSystem = PortalManager->GetDSLocalPlayerSubsytem(); IsValid(DSLocalPlayerSubSystem))
+	{
+		DSLocalPlayerSubSystem->Password = Password;
+	}
+
 	PortalManager->SignIn(Username, Password);
 }
 
@@ -93,6 +102,8 @@ void USignInOverlay::SignUpButtonClicked()
 	const FString Password = SignUpPage->TextBox_Password->GetText().ToString();
 	const FString Email = SignUpPage->TextBox_Email->GetText().ToString();
 
+
+	
 	PortalManager->SignUp(Username, Password, Email);
 	
 }
@@ -115,5 +126,22 @@ void USignInOverlay::OnConfirmSucceeded()
 {
 	ConfirmSignUpPage->ClearTextBoxes();
 	ShowSuccessConfirmedPage();
+}
+
+void USignInOverlay::AutoSignIn()
+{
+	if (UDSLocalPlayerSubSystem* DSLocalPlayerSubSystem = PortalManager->GetDSLocalPlayerSubsytem(); IsValid(DSLocalPlayerSubSystem))
+	{
+		const FString& Username = DSLocalPlayerSubSystem->Username;
+		const FString& Password = DSLocalPlayerSubSystem->Password;
+
+		if (Username.IsEmpty() || Password.IsEmpty()) return;
+
+		SignInPage->Button_SignIn->SetIsEnabled(false);
+
+		PortalManager->SignIn(Username, Password);
+
+		SignInPage->UpdateStatusMessage("Signing Back in...", false);
+	}
 }
 

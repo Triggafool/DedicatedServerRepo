@@ -160,6 +160,7 @@ void UGameStatsManager::UpdateLeaderboard_Response(FHttpRequestPtr Request, FHtt
 
 void UGameStatsManager::RetrieveLeaderboard()
 {
+	RetrieveLeaderboardStatusMessage.Broadcast(TEXT("Retrieving Leaderboard... "), false);
 	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
 	Request->OnProcessRequestComplete().BindUObject(this, &UGameStatsManager::RetrieveLeaderboard_Response);
 	const FString APIURL = APIData->GetAPIEndPoint(DedicatedServersTags::GameStatsAPI::RetrieveLeaderboard);
@@ -175,6 +176,7 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 {
 	if (!bWasSuccessful)
 	{
+		RetrieveLeaderboardStatusMessage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
 		UE_LOG(LogDedicatedServers, Error, TEXT("Failed to retrieve Leaderboard."))
 		return;
 	}
@@ -188,6 +190,7 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 	{
 		if (ContainsErrors(JsonObject))
 		{
+			RetrieveLeaderboardStatusMessage.Broadcast(HTTPStatusMessages::SomethingWentWrong, false);
 			return;
 		}
 
@@ -214,5 +217,6 @@ void UGameStatsManager::RetrieveLeaderboard_Response(FHttpRequestPtr Request, FH
 	}
 
 	OnRetrieveLeaderboardDelegate.Broadcast(LeaderboardItems);
+	RetrieveLeaderboardStatusMessage.Broadcast("", false);
 }
 
