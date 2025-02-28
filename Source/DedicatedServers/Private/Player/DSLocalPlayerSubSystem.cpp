@@ -2,6 +2,8 @@
 
 
 #include "Player/DSLocalPlayerSubSystem.h"
+
+#include "Net/UnrealNetwork.h"
 #include "UI/Portal/Interfaces/PortalManagement.h"
 
 void UDSLocalPlayerSubSystem::InitializeTokens(const FDSAuthenticationResult& AuthResult, TScriptInterface<IPortalManagement> PortalManagement)
@@ -39,4 +41,10 @@ void UDSLocalPlayerSubSystem::UpdateTokens(const FString& AccessToken, const FSt
 FDSAuthenticationResult UDSLocalPlayerSubSystem::GetAuthResults() const
 {
 	return AuthenticationResult;
+}
+
+void UDSLocalPlayerSubSystem::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UDSLocalPlayerSubSystem, Username);
 }

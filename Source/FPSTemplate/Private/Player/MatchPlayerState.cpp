@@ -2,13 +2,15 @@
 
 
 #include "Player/MatchPlayerState.h"
-
 #include "Data/SpecialElimData.h"
 #include "Game/MatchGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShooterTypes/ShooterTypes.h"
 #include "UI/Elims/SpecialElimWidget.h"
+
 #include "UI/HTTP/HTTPRequestTypes.h"
+
+class ADSPlayerController;
 
 void AMatchPlayerState::OnMatchEnded(const FString& Username)
 {
@@ -38,6 +40,11 @@ void AMatchPlayerState::OnMatchEnded(const FString& Username)
 	RecordMatchStats(MatchStatsInput);
 }
 
+void AMatchPlayerState::OnScoreboardOpen(bool bOpen)
+{
+	Super::OnScoreboardOpen(bOpen);
+}
+
 AMatchPlayerState::AMatchPlayerState()
 {
 	NetUpdateFrequency = 100.f; // let's not be sluggish, alright?
@@ -59,26 +66,31 @@ AMatchPlayerState::AMatchPlayerState()
 void AMatchPlayerState::AddScoredElim()
 {
 	++ScoredElims;
+	CurrentMatchStats.matchStats.scoredElims++;
 }
 
 void AMatchPlayerState::AddDefeat()
 {
 	++Defeats;
+	CurrentMatchStats.matchStats.defeats++;
 }
 
 void AMatchPlayerState::AddHit()
 {
 	++Hits;
+	CurrentMatchStats.matchStats.hits++;
 }
 
 void AMatchPlayerState::AddMiss()
 {
 	++Misses;
+	CurrentMatchStats.matchStats.misses++;
 }
 
 void AMatchPlayerState::AddHeadShotElim()
 {
 	++HeadShotElims;
+	CurrentMatchStats.matchStats.headShotElims++;
 }
 
 void AMatchPlayerState::AddSequentialElim(int32 SequenceCount)
@@ -116,26 +128,31 @@ void AMatchPlayerState::UpdateHighestStreak(int32 StreakCount)
 void AMatchPlayerState::AddRevengeElim()
 {
 	++RevengeElims;
+	CurrentMatchStats.matchStats.revengeElims++;
 }
 
 void AMatchPlayerState::AddDethroneElim()
 {
 	++DethroneElims;
+	CurrentMatchStats.matchStats.dethroneElims++;
 }
 
 void AMatchPlayerState::AddShowStopperElim()
 {
 	++ShowStopperElims;
+	CurrentMatchStats.matchStats.showstopperElims++;
 }
 
 void AMatchPlayerState::GotFirstBlood()
 {
 	bFirstBlood = true;
+	CurrentMatchStats.matchStats.gotFirstBlood = 1;
 }
 
 void AMatchPlayerState::IsTheWinner()
 {
 	bWinner = true;
+	CurrentMatchStats.matchStats.matchWins = 1;
 }
 
 TArray<ESpecialElimType> AMatchPlayerState::DecodeElimBitmask(ESpecialElimType ElimTypeBitmask)
@@ -154,6 +171,14 @@ TArray<ESpecialElimType> AMatchPlayerState::DecodeElimBitmask(ESpecialElimType E
 
 	return ValidElims;
 }
+
+void AMatchPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+}
+
 
 void AMatchPlayerState::ProcessNextSpecialElim()
 {

@@ -15,6 +15,7 @@ class APlayerController;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerStateReplicated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuitMenuOpen, bool, bOpen);
 
+
 /**
  * 
  */
@@ -37,6 +38,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnQuitMenuOpen OnQuitMenuOpen;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -58,13 +60,18 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> QuitAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ViewScoreboardAction;
 	
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Crouch();
 	void Input_Jump();
 	void Input_Quit();
+	void Input_ViewScoreboard();
 	
 	bool bQuitMenuOpen;
+	bool bScoreboardOpen;
 	
 };

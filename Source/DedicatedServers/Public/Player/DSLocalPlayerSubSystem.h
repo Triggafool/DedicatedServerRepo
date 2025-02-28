@@ -24,9 +24,15 @@ public:
 	void UpdateTokens(const FString& AccessToken, const FString& IdToken);
 	FDSAuthenticationResult GetAuthResults() const;
 
+	UPROPERTY(Replicated)
 	FString Username{};
+	
 	FString Email{};
+
 	FString Password{};
+
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 private:
 	

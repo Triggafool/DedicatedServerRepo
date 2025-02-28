@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Types/DSTypes.h"
 #include "DSPlayerController.generated.h"
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreboardMenuOpen, bool, bOpen);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimerStateChangedDelegate, float, Time, ECountdownTimerType, Type);
 
 /**
@@ -42,9 +42,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	FString Username;
+	
 	UPROPERTY(BlueprintReadOnly)
 	FString PlayerSessionId;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnScoreboardMenuOpen OnScoreboardMenuOpen;
+	
 protected:
 
 	virtual void BeginPlay() override;

@@ -4,6 +4,7 @@
 #include "UI/ShooterHUD.h"
 
 #include "Blueprint/UserWidget.h"
+#include "UI/Match/ShooterMatchOverlay.h"
 
 
 void AShooterHUD::BeginPlay()
@@ -13,7 +14,8 @@ void AShooterHUD::BeginPlay()
 	APlayerController* PlayerController = GetOwningPlayerController();
 	if (IsValid(PlayerController) && ShooterOverlayClass)
 	{
-		Overlay = CreateWidget<UUserWidget>(PlayerController, ShooterOverlayClass);
+		Overlay = CreateWidget<UShooterMatchOverlay>(PlayerController, ShooterOverlayClass);
 		Overlay->AddToViewport();
 	}
+	
 }

@@ -2,7 +2,6 @@
 
 
 #include "Game/MatchGameState.h"
-
 #include "Player/MatchPlayerState.h"
 
 
@@ -20,6 +19,7 @@ AMatchPlayerState* AMatchGameState::GetLeader() const
 	}
 	return nullptr;
 }
+
 
 void AMatchGameState::UpdateLeader()
 {
@@ -75,8 +75,11 @@ TArray<AMatchPlayerState*> AMatchGameState::GetLeaders() const
 	return Leaders;
 }
 
+
 void AMatchGameState::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 	
 }

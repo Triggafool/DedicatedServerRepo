@@ -101,8 +101,6 @@ void USignInOverlay::SignUpButtonClicked()
 	const FString Username = SignUpPage->TextBox_UserName->GetText().ToString();
 	const FString Password = SignUpPage->TextBox_Password->GetText().ToString();
 	const FString Email = SignUpPage->TextBox_Email->GetText().ToString();
-
-
 	
 	PortalManager->SignUp(Username, Password, Email);
 	

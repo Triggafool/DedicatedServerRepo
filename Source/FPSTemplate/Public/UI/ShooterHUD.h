@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "ShooterHUD.generated.h"
 
+class UShooterMatchOverlay;
 class UUserWidget;
 
 /**
@@ -16,7 +17,7 @@ class FPSTEMPLATE_API AShooterHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
-	UUserWidget* GetShooterOverlay() {return Overlay;}
+	UShooterMatchOverlay* GetShooterOverlay() { return Overlay; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,8 +25,8 @@ protected:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Overlay")
-	TSubclassOf<UUserWidget> ShooterOverlayClass;
+	TSubclassOf<UShooterMatchOverlay> ShooterOverlayClass;
 
 	UPROPERTY()
-	TObjectPtr<UUserWidget> Overlay;
+	TObjectPtr<UShooterMatchOverlay> Overlay;
 };

@@ -22,8 +22,9 @@ class FPSTEMPLATE_API AMatchPlayerState : public ADS_MatchPlayerState
 	GENERATED_BODY()
 public:
 
-	// Dedicated Server Functions
+	// Dedicated Server Additions
 	virtual void OnMatchEnded(const FString& Username) override;
+	virtual void OnScoreboardOpen(bool bOpen) override;
 	
 	AMatchPlayerState();
 
@@ -64,10 +65,11 @@ public:
 	TArray<ESpecialElimType> DecodeElimBitmask(ESpecialElimType ElimTypeBitmask);
 
 protected:
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> SpecialElimWidgetClass;
-	
+
+	virtual void BeginPlay() override;
 private:
 	int32 ScoredElims;
 	int32 Defeats;
@@ -92,6 +94,7 @@ private:
 
 	void ProcessNextSpecialElim();
 	void ShowSpecialElim(const FSpecialElimInfo& ElimMessageInfo);
+
 };
 
 

@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "HTTPRequestTypes.generated.h"
 
 namespace HTTPStatusMessages
@@ -306,6 +305,19 @@ struct FDSMatchStats
 	UPROPERTY()
 	int32 matchLosses{};
 	
+};
+
+USTRUCT()
+struct FDSScoreboardMatchStats
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FDSMatchStats matchStats{};
+
+	UPROPERTY()
+	FString Username{};
+
 };
 
 USTRUCT()

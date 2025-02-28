@@ -31,6 +31,7 @@ AShooterPlayerController::AShooterPlayerController()
 	bReplicates = true;
 	bPawnAlive = true;
 	bQuitMenuOpen = false;
+	bScoreboardOpen = false;
 }
 
 void AShooterPlayerController::OnPossess(APawn* InPawn)
@@ -66,6 +67,7 @@ void AShooterPlayerController::SetupInputComponent()
 	ShooterInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AShooterPlayerController::Input_Crouch);
 	ShooterInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AShooterPlayerController::Input_Jump);
 	ShooterInputComponent->BindAction(QuitAction, ETriggerEvent::Started, this, &AShooterPlayerController::Input_Quit);
+	ShooterInputComponent->BindAction(ViewScoreboardAction, ETriggerEvent::Started, this, &AShooterPlayerController::Input_ViewScoreboard);
 }
 
 void AShooterPlayerController::Input_Move(const FInputActionValue& InputActionValue)
@@ -123,6 +125,24 @@ void AShooterPlayerController::Input_Quit()
 		SetInputMode(InputMode);
 		SetShowMouseCursor(false);
 		OnQuitMenuOpen.Broadcast(false);
+	}
+}
+
+void AShooterPlayerController::Input_ViewScoreboard()
+{
+	bScoreboardOpen = !bScoreboardOpen;
+
+	if (bScoreboardOpen)
+	{
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+		OnScoreboardMenuOpen.Broadcast(true);
+	}
+	else
+	{
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+		OnScoreboardMenuOpen.Broadcast(false);
 	}
 }
 

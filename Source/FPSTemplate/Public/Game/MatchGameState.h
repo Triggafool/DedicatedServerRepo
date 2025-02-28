@@ -6,6 +6,8 @@
 #include "GameFramework/GameState.h"
 #include "MatchGameState.generated.h"
 
+class ADS_MatchPlayerState;
+struct FDSScoreboardMatchStats;
 class AMatchPlayerState;
 
 /**
@@ -20,20 +22,20 @@ public:
 
 	AMatchPlayerState* GetLeader() const;
 
+	
 	void UpdateLeader();
 	bool HasFirstBloodBeenHad() const { return bHasFirstBloodBeenHad; }
 	bool IsTiedForTheLead(AMatchPlayerState* PlayerState);
-
+	
 	TArray<AMatchPlayerState*> GetLeaders() const;
+
 protected:
 	virtual void BeginPlay() override;
+
 private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<AMatchPlayerState>> Leaders;
-
-	UPROPERTY()
-	TArray<TObjectPtr<AMatchPlayerState>> SortedPlayerStates;
-
+	
 	bool bHasFirstBloodBeenHad;
 };

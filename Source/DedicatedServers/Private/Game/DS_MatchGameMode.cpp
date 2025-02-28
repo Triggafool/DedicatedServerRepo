@@ -39,6 +39,7 @@ void ADS_MatchGameMode::InitSeamlessTravelPlayer(AController* NewController)
 		MatchStatus = EMatchStatus::PreMatch;
 		StartCountdownTimer(PreMatchTimer);
 	}
+	
 }
 
 void ADS_MatchGameMode::BeginPlay()
@@ -49,6 +50,7 @@ void ADS_MatchGameMode::BeginPlay()
 	
 	GameStatsManager = NewObject<UGameStatsManager>(this, GameStatsManagerClass);
 	GameStatsManager->OnUpdateLeaderSucceeded.AddDynamic(this, &ADS_MatchGameMode::OnLeaderboardUpdated);
+	
 }
 
 void ADS_MatchGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
