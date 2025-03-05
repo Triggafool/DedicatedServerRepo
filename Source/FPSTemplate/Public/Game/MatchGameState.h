@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameState.h"
+#include "Game/DSGameState.h"
 #include "MatchGameState.generated.h"
 
 class ADS_MatchPlayerState;
@@ -14,7 +14,7 @@ class AMatchPlayerState;
  * 
  */
 UCLASS()
-class FPSTEMPLATE_API AMatchGameState : public AGameState
+class FPSTEMPLATE_API AMatchGameState : public ADSGameState
 {
 	GENERATED_BODY()
 public:

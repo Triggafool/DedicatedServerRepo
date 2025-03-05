@@ -48,7 +48,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnScoreboardMenuOpen OnScoreboardMenuOpen;
-	
+
 protected:
 
 	virtual void BeginPlay() override;

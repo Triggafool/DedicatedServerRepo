@@ -21,7 +21,6 @@ class FPSTEMPLATE_API AMatchPlayerState : public ADS_MatchPlayerState
 {
 	GENERATED_BODY()
 public:
-
 	// Dedicated Server Additions
 	virtual void OnMatchEnded(const FString& Username) override;
 	virtual void OnScoreboardOpen(bool bOpen) override;

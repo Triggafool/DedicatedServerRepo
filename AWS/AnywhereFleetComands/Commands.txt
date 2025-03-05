@@ -37,14 +37,14 @@ aws gamelift get-compute-auth-token ^
     "FleetArn": "arn:aws:gamelift:us-east-1:676206945030:fleet/fleet-e02dea43-4de7-4a1e-b071-6e1fdb18177c",
     "ComputeName": "DesktopPC",
     "ComputeArn": "arn:aws:gamelift:us-east-1:676206945030:compute/DesktopPC",
-    "AuthToken": "53942437-ae14-4d68-9ea2-5fa71f360023",
+    "AuthToken": "b2afcb42-d389-45a7-b7b0-375639252b3a",
     "ExpirationTimestamp": "2025-02-06T03:22:37-05:00"
 }
 
 3. Run Dedicated Server Build: (update build, authtoken)
 
-"D:\Game\DedicatedServer\Build\Build5\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
--authtoken=5e5a1e86-e391-4aa3-aa35-68332e57d9df ^
+"D:\Game\DedicatedServer\Build\Build6\WindowsServer\FPSTemplate\Binaries\Win64\FPSTemplateServer.exe" -log ^
+-authtoken=915b683b-1037-4763-90f5-2a421e2d18c1 ^
 -hostid=DesktopActuallyOnline -fleetid=fleet-62fcd79e-c91a-46ab-80a7-8ca666ac4ef6 ^
 -websocketurl=wss://us-east-1.api.amazongamelift.com ^
 -port=7777

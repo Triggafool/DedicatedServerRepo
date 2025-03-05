@@ -7,9 +7,11 @@
 #include "DSGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLobbyStateInitialized, ALobbyState*, LobbyState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreboardControllerInitialized, AScoreboardController*, ScoreboardController);
 
 
 class ALobbyState;
+class AScoreboardController;
 /**
  * 
  */
@@ -20,7 +22,6 @@ class DEDICATEDSERVERS_API ADSGameState : public AGameState
 
 public:
 	ADSGameState();
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(ReplicatedUsing=OnRep_LobbyState)
@@ -28,15 +29,25 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnLobbyStateInitialized OnLobbyStateInitialized;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnScoreboardControllerInitialized OnScoreboardControllerInitialized;
+
+	UPROPERTY(ReplicatedUsing=OnRep_ScoreboardController)
+	TObjectPtr<AScoreboardController> ScoreboardController;
+
 protected:
 
 	virtual void BeginPlay() override;
-
 	void CreateLobbyState();
+	void CreateScoreboardController();
+
 private:
 	
 	UFUNCTION()
 	void OnRep_LobbyState();
 
+	UFUNCTION()
+	void OnRep_ScoreboardController();
 	
 };

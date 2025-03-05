@@ -6,6 +6,11 @@
 #include "Net/UnrealNetwork.h"
 #include "UI/Portal/Interfaces/PortalManagement.h"
 
+UDSLocalPlayerSubSystem::UDSLocalPlayerSubSystem()
+{
+	Username = FString::FromInt(FMath::Rand());
+}
+
 void UDSLocalPlayerSubSystem::InitializeTokens(const FDSAuthenticationResult& AuthResult, TScriptInterface<IPortalManagement> PortalManagement)
 {
 	AuthenticationResult = AuthResult;

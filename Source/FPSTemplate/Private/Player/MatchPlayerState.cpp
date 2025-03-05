@@ -5,6 +5,7 @@
 #include "Data/SpecialElimData.h"
 #include "Game/MatchGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Scoreboard/ScoreboardController.h"
 #include "ShooterTypes/ShooterTypes.h"
 #include "UI/Elims/SpecialElimWidget.h"
 
@@ -47,6 +48,7 @@ void AMatchPlayerState::OnScoreboardOpen(bool bOpen)
 
 AMatchPlayerState::AMatchPlayerState()
 {
+	CurrentScoreboardStats.TestingName = FString(TEXT("Player_")) + FString::FromInt(FMath::Rand());
 	NetUpdateFrequency = 100.f; // let's not be sluggish, alright?
 	ScoredElims = 0;
 	Defeats = 0;
@@ -66,31 +68,42 @@ AMatchPlayerState::AMatchPlayerState()
 void AMatchPlayerState::AddScoredElim()
 {
 	++ScoredElims;
-	CurrentMatchStats.matchStats.scoredElims++;
+	
+	if (IsValid(ScoreboardController))
+	{
+		ScoreboardController->ModifyKills(CurrentScoreboardStats, 1);
+	}
 }
 
 void AMatchPlayerState::AddDefeat()
 {
 	++Defeats;
-	CurrentMatchStats.matchStats.defeats++;
+
+	if (IsValid(ScoreboardController))
+	{
+		ScoreboardController->ModifyDeaths(CurrentScoreboardStats, 1);
+	}
 }
 
 void AMatchPlayerState::AddHit()
 {
 	++Hits;
-	CurrentMatchStats.matchStats.hits++;
+//	CurrentMatchStats.matchStats.hits++;
 }
 
 void AMatchPlayerState::AddMiss()
 {
 	++Misses;
-	CurrentMatchStats.matchStats.misses++;
+//	CurrentMatchStats.matchStats.misses++;
 }
 
 void AMatchPlayerState::AddHeadShotElim()
 {
 	++HeadShotElims;
-	CurrentMatchStats.matchStats.headShotElims++;
+	if (IsValid(ScoreboardController))
+	{
+		ScoreboardController->ModifyHeadShots(CurrentScoreboardStats, 1);
+	}
 }
 
 void AMatchPlayerState::AddSequentialElim(int32 SequenceCount)
@@ -128,31 +141,31 @@ void AMatchPlayerState::UpdateHighestStreak(int32 StreakCount)
 void AMatchPlayerState::AddRevengeElim()
 {
 	++RevengeElims;
-	CurrentMatchStats.matchStats.revengeElims++;
+//	CurrentMatchStats.matchStats.revengeElims++;
 }
 
 void AMatchPlayerState::AddDethroneElim()
 {
 	++DethroneElims;
-	CurrentMatchStats.matchStats.dethroneElims++;
+//	CurrentMatchStats.matchStats.dethroneElims++;
 }
 
 void AMatchPlayerState::AddShowStopperElim()
 {
 	++ShowStopperElims;
-	CurrentMatchStats.matchStats.showstopperElims++;
+//	CurrentMatchStats.matchStats.showstopperElims++;
 }
 
 void AMatchPlayerState::GotFirstBlood()
 {
 	bFirstBlood = true;
-	CurrentMatchStats.matchStats.gotFirstBlood = 1;
+//	CurrentMatchStats.matchStats.gotFirstBlood = 1;
 }
 
 void AMatchPlayerState::IsTheWinner()
 {
 	bWinner = true;
-	CurrentMatchStats.matchStats.matchWins = 1;
+//	CurrentMatchStats.matchStats.matchWins = 1;
 }
 
 TArray<ESpecialElimType> AMatchPlayerState::DecodeElimBitmask(ESpecialElimType ElimTypeBitmask)

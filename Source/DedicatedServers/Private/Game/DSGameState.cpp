@@ -2,13 +2,14 @@
 
 
 #include "Game/DSGameState.h"
-
 #include "Lobby/LobbyState.h"
+#include "Scoreboard/ScoreboardController.h"
 #include "Net/UnrealNetwork.h"
 
 ADSGameState::ADSGameState()
 {
 	bReplicates = true;
+	bAlwaysRelevant = true;
 }
 
 void ADSGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -16,6 +17,7 @@ void ADSGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
  
 	DOREPLIFETIME(ADSGameState, LobbyState);
+	DOREPLIFETIME(ADSGameState, ScoreboardController);
 }
 
 void ADSGameState::BeginPlay()
@@ -27,7 +29,10 @@ void ADSGameState::BeginPlay()
 		CreateLobbyState();
 		OnLobbyStateInitialized.Broadcast(LobbyState);
 	}
-
+	if (HasAuthority())
+	{
+	CreateScoreboardController();
+	}
 }
 
 void ADSGameState::CreateLobbyState()
@@ -49,9 +54,37 @@ void ADSGameState::CreateLobbyState()
 	}
 }
 
+void ADSGameState::CreateScoreboardController()
+{
+	if (UWorld* World = GetWorld(); IsValid(World))
+	{
+		FActorSpawnParameters SpawnParameters;
+		ScoreboardController = World->SpawnActor<AScoreboardController>(
+			AScoreboardController::StaticClass(),
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			SpawnParameters
+		);
+
+		if (IsValid(ScoreboardController))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Scoreboard Controller has been created and is Valid."));
+			ScoreboardController->SetOwner(this);
+			OnScoreboardControllerInitialized.Broadcast(ScoreboardController);
+		}
+	}
+}
+
+
+
 void ADSGameState::OnRep_LobbyState()
 {
 	OnLobbyStateInitialized.Broadcast(LobbyState);
+}
+
+void ADSGameState::OnRep_ScoreboardController()
+{
+	OnScoreboardControllerInitialized.Broadcast(ScoreboardController);
 }
 
 

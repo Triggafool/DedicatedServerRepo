@@ -179,7 +179,7 @@ struct FDSSignUpResponse
 	FDSCodeDeliveryDetails CodeDeliveryDetails;
 	
 	UPROPERTY()
-	bool UserConfirmed;
+	bool UserConfirmed{};
 	
 	UPROPERTY()
 	FString UserSub;
@@ -210,7 +210,7 @@ struct FDSAuthenticationResult
 	FString AccessToken;
 	
 	UPROPERTY()
-	int32 ExpiresIn;
+	int32 ExpiresIn{};
 	
 	UPROPERTY()
 	FString IdToken;
@@ -400,5 +400,5 @@ struct FDSLeaderboardItem
 	int32 matchWins{};
 
 	UPROPERTY()
-	int32 place;
+	int32 place{};
 };

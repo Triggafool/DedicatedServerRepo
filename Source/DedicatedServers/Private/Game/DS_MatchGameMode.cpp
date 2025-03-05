@@ -1,8 +1,12 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Game/DS_MatchGameMode.h"
+
+#include "Game/DSGameState.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/DSPlayerController.h"
 #include "Player/DS_MatchPlayerState.h"
+#include "Scoreboard/ScoreboardController.h"
 #include "UI/GameStats/GameStatsManager.h"
 
 ADS_MatchGameMode::ADS_MatchGameMode()
@@ -28,6 +32,15 @@ void ADS_MatchGameMode::PostLogin(APlayerController* NewPlayer)
 void ADS_MatchGameMode::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
+	
+	ADSPlayerController* DSPlayerController = Cast<ADSPlayerController>(Exiting);
+	ADSGameState* DSGameState = GetGameState<ADSGameState>();
+	if (IsValid(DSGameState) && IsValid(DSGameState->ScoreboardController) && IsValid(DSPlayerController))
+	{
+		ADS_MatchPlayerState* DSPlayerState = DSPlayerController->GetPlayerState<ADS_MatchPlayerState>();
+		DSGameState->ScoreboardController->RemovePlayerInfo(DSPlayerState->CurrentScoreboardStats.Username);
+	}
+	
 	RemovePlayerSession(Exiting);
 }
 
@@ -45,12 +58,9 @@ void ADS_MatchGameMode::InitSeamlessTravelPlayer(AController* NewController)
 void ADS_MatchGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 	check(GameStatsManagerClass)
-	
 	GameStatsManager = NewObject<UGameStatsManager>(this, GameStatsManagerClass);
 	GameStatsManager->OnUpdateLeaderSucceeded.AddDynamic(this, &ADS_MatchGameMode::OnLeaderboardUpdated);
-	
 }
 
 void ADS_MatchGameMode::OnCountdownTimerFinished(ECountdownTimerType Type)
@@ -122,7 +132,14 @@ void ADS_MatchGameMode::UpdateLeaderboard(const TArray<FString>& LeaderboardName
 	}
 }
 
+
+
 void ADS_MatchGameMode::OnLeaderboardUpdated()
 {
 	EndMatchForPlayerStates();
+}
+
+void ADS_MatchGameMode::SetUsername(APlayerController* PlayerController)
+{
+	
 }

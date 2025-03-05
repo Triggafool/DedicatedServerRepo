@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameplayTagContainer.h"
+#include "Character/DS_PlayerCharacter.h"
 #include "Interfaces/PlayerInterface.h"
 #include "ShooterTypes/ShooterTypes.h"
 #include "ShooterCharacter.generated.h"
@@ -23,7 +24,7 @@ class UInputAction;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponFirstReplicated, AWeapon*, Weapon);
 
 UCLASS()
-class FPSTEMPLATE_API AShooterCharacter : public ACharacter, public IPlayerInterface
+class FPSTEMPLATE_API AShooterCharacter : public ADS_PlayerCharacter, public IPlayerInterface
 {
 	GENERATED_BODY()
 

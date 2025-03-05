@@ -18,6 +18,8 @@ class DEDICATEDSERVERS_API UDSLocalPlayerSubSystem : public ULocalPlayerSubsyste
 	GENERATED_BODY()
 
 public:
+
+	UDSLocalPlayerSubSystem();
 	
 	void InitializeTokens(const FDSAuthenticationResult& AuthResult, TScriptInterface<IPortalManagement> PortalManagement);
 	void SetRefreshTokenTimer();

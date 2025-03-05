@@ -2,20 +2,18 @@
 
 
 #include "UI/Match/PlayerScoreCard.h"
-
 #include "Components/TextBlock.h"
-#include "Kismet/GameplayStatics.h"
-#include "UI/HTTP/HTTPRequestTypes.h"
+#include "Scoreboard/ScoreboardInfo.h"
 
-
-void UPlayerScoreCard::SetTextBlocks(const FDSScoreboardMatchStats& Stats)
+void UPlayerScoreCard::SetTextBlocks(const FScoreboardInfo& Info)
 {
+	TextBlock_Username->SetText(FText::FromString(Info.Username));
+	TextBlock_Elims->SetText(FText::AsNumber(Info.Kills));
+	TextBlock_Deaths->SetText(FText::AsNumber(Info.Deaths));
+	TextBlock_HeadShots->SetText(FText::AsNumber(Info.HeadShots));
+}
 
-	float TotalShots = Stats.matchStats.hits + Stats.matchStats.misses;
-	float Accurracy = (Stats.matchStats.hits / TotalShots) * 100.f;
-		
-	TextBlock_Username->SetText(FText::FromString(Stats.Username));
-	TextBlock_Elims->SetText(FText::AsNumber(Stats.matchStats.scoredElims));
-	TextBlock_Deaths->SetText(FText::AsNumber(Stats.matchStats.defeats));
-	TextBlock_Accuracy->SetText(FText::AsNumber(Accurracy));
+FString UPlayerScoreCard::GetUsername() const
+{
+	return TextBlock_Username->GetText().ToString();
 }
